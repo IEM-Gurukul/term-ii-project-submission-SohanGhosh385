@@ -5,67 +5,79 @@ import java.util.Scanner;
 public class Library {
 
     private ArrayList<Book> books;
-    private ArrayList<Student> students; // NEW
+    private ArrayList<Student> students;
+    private ArrayList<IssueRecord> issuedRecords; // NEW
 
     public Library() {
         books = new ArrayList<>();
-        students = new ArrayList<>(); // initialize students
+        students = new ArrayList<>();
+        issuedRecords = new ArrayList<>(); // initialize issued records
         loadBooks();
-        loadStudents(); // NEW
+        loadStudents();
+        loadIssuedRecords(); // NEW
     }
 
-    // Book management (unchanged)
-    public void addBook(Book book) {
-        books.add(book);
-        saveBooks();
-    }
+    // ===== Existing methods: add/view books and students =====
 
-    public void viewBooks() {
-        if (books.isEmpty()) {
-            System.out.println("No books available.");
-            return;
-        }
-        System.out.println("Book ID | Title | Author | Quantity");
-        for (Book b : books) {
-            System.out.println(b.getId() + " | " + b.getTitle() + " | " + b.getAuthor() + " | " + b.getQuantity());
-        }
-    }
-
-    // Student management - ADD STUDENT
-    public void addStudent(Student student) {
-        students.add(student);
-        saveStudents();
-    }
-
-    // Student management - VIEW STUDENTS
-    public void viewStudents() {
-        if (students.isEmpty()) {
-            System.out.println("No students registered.");
-            return;
-        }
-        System.out.println("Student ID | Name");
+    // ===== Issue Book =====
+    public void issueBook(int studentId, int bookId) {
+        // Check if student exists
+        Student student = null;
         for (Student s : students) {
-            System.out.println(s.getId() + " | " + s.getName());
+            if (s.getId() == studentId) {
+                student = s;
+                break;
+            }
         }
+        if (student == null) {
+            System.out.println("Student not found!");
+            return;
+        }
+
+        // Check if book exists and available
+        Book book = null;
+        for (Book b : books) {
+            if (b.getId() == bookId) {
+                book = b;
+                break;
+            }
+        }
+        if (book == null) {
+            System.out.println("Book not found!");
+            return;
+        }
+
+        if (book.getQuantity() <= 0) {
+            System.out.println("Book not available for issuing!");
+            return;
+        }
+
+        // Reduce quantity and record issuance
+        book.setQuantity(book.getQuantity() - 1);
+        IssueRecord record = new IssueRecord(studentId, bookId);
+        issuedRecords.add(record);
+        saveBooks();
+        saveIssuedRecords();
+        System.out.println("Book issued successfully to " + student.getName());
     }
 
-    // ===== Persistence for students =====
-    private void saveStudents() {
+    // ===== Persistence for issued records =====
+    private void saveIssuedRecords() {
         try {
-            PrintWriter writer = new PrintWriter(new FileWriter("students.txt"));
-            for (Student s : students) {
-                writer.println(s.getId() + "," + s.getName());
+            PrintWriter writer = new PrintWriter(new FileWriter("issued.txt"));
+            for (IssueRecord r : issuedRecords) {
+                writer.println(r.getStudentId() + "," + r.getBookId());
             }
             writer.close();
         } catch (IOException e) {
-            System.out.println("Error saving students: " + e.getMessage());
+            System.out.println("Error saving issued records: " + e.getMessage());
         }
     }
 
-    private void loadStudents() {
-        students.clear();
+    private void loadIssuedRecords() {
+        issuedRecords.clear();
         try {
-            File file = new File("students.txt");
+            File file = new File("issued.txt");
             if (!file.exists()) return;
 
             Scanner scanner = new Scanner(file);
@@ -73,51 +85,14 @@ public class Library {
                 String line = scanner.nextLine();
                 String[] parts = line.split(",");
                 if (parts.length == 2) {
-                    int id = Integer.parseInt(parts[0]);
-                    String name = parts[1];
-                    students.add(new Student(id, name));
+                    int sid = Integer.parseInt(parts[0]);
+                    int bid = Integer.parseInt(parts[1]);
+                    issuedRecords.add(new IssueRecord(sid, bid));
                 }
             }
             scanner.close();
         } catch (Exception e) {
-            System.out.println("Error loading students: " + e.getMessage());
-        }
-    }
-
-    // ===== Book persistence methods (unchanged) =====
-    private void saveBooks() {
-        try {
-            PrintWriter writer = new PrintWriter(new FileWriter("books.txt"));
-            for (Book b : books) {
-                writer.println(b.getId() + "," + b.getTitle() + "," + b.getAuthor() + "," + b.getQuantity());
-            }
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("Error saving books: " + e.getMessage());
-        }
-    }
-
-    private void loadBooks() {
-        books.clear();
-        try {
-            File file = new File("books.txt");
-            if (!file.exists()) return;
-
-            Scanner scanner = new Scanner(file);
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                String[] parts = line.split(",");
-                if (parts.length == 4) {
-                    int id = Integer.parseInt(parts[0]);
-                    String title = parts[1];
-                    String author = parts[2];
-                    int quantity = Integer.parseInt(parts[3]);
-                    books.add(new Book(id, title, author, quantity));
-                }
-            }
-            scanner.close();
-        } catch (Exception e) {
-            System.out.println("Error loading books: " + e.getMessage());
+            System.out.println("Error loading issued records: " + e.getMessage());
         }
     }
 }
