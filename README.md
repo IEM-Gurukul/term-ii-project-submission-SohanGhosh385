@@ -53,5 +53,68 @@ javac *.java
 java Main
 
 ## Git Discipline Notes
+Commits on Mar 28, 2026
+FIlled the Given README
+SohanGhosh385
+SohanGhosh385
+authored
+1 minute ago
+
+Added Final README
+SohanGhosh385
+SohanGhosh385
+committed
+16 minutes ago
+Implement return book functionality: update quantity, remove issued record, and persist changes
+SohanGhosh385
+SohanGhosh385
+committed
+30 minutes ago
+Commits on Mar 27, 2026
+Implement book issuance: check availability, update quantity, and track issued records with persistence
+SohanGhosh385
+SohanGhosh385
+committed
+yesterday
+Add student management to Library class with persistence and update Main.java menu
+SohanGhosh385
+SohanGhosh385
+committed
+yesterday
+Commits on Mar 26, 2026
+Implement Library class with file persistence and add Main.java menu for add/view books
+SohanGhosh385
+SohanGhosh385
+committed
+2 days ago
+Commits on Mar 24, 2026
+Add initial Library class with ArrayList to store books and basic add/view methods
+SohanGhosh385
+SohanGhosh385
+committed
+4 days ago
+Commits on Mar 22, 2026
+Added IssueRecord class to track book issuance details with studentId and bookId
+SohanGhosh385
+SohanGhosh385
+committed
+last week
+Commits on Mar 21, 2026
+Add Student class with attributes studentId and name along with getters
+SohanGhosh385
+SohanGhosh385
+committed
+last week
+Commits on Mar 19, 2026
+Add Book class with attributes id, title, author, and quantity along with getters
+SohanGhosh385
+SohanGhosh385
+committed
+last week
+Initialized Project Structure with required folder structure and added README
+SohanGhosh385
+SohanGhosh385
+committed
+last week
 
 
